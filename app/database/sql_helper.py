@@ -4,7 +4,7 @@ from sqlalchemy.pool.base import _ConnectionFairy
 from contextlib import closing
 from ..utils.responses import Responses
 from ..utils.strings import Strings
-from ..utils.decorators import Decorators
+from ..utils.decorators import method_handler
 from fastapi import Depends
 from ..database.database import get_cursor, get_connection, get_engine
 
@@ -18,7 +18,7 @@ class SqlHelper(object):
     # def __del__(self):
     #     cursor.close()
 
-    @Decorators.method_handler
+    @method_handler
     def execute(self, query, values=None):
         with closing(self.connection.cursor()) as cursor:
             if values is None:
@@ -29,7 +29,7 @@ class SqlHelper(object):
             self.connection.commit()
             return Responses.success_response()
 
-    @Decorators.method_handler
+    @method_handler
     def insert(self, query, values=None):
         with closing(self.connection.cursor()) as cursor:
             if values is None:
@@ -45,7 +45,7 @@ class SqlHelper(object):
                     message=Strings.INSERTION_FAILED
                 )
 
-    @Decorators.method_handler
+    @method_handler
     def bulk_insert(self, query, values):
         with closing(self.connection.cursor()) as cursor:
             execute_values(cursor, query, values)
@@ -58,7 +58,7 @@ class SqlHelper(object):
                     message=Strings.INSERTION_FAILED
                 )
 
-    @Decorators.method_handler
+    @method_handler
     def insert_with_id(self, query, values=None):
         with closing(self.connection.cursor()) as cursor:
             if values is None:
@@ -74,7 +74,7 @@ class SqlHelper(object):
                     message=Strings.INSERTION_FAILED
                 )
 
-    @Decorators.method_handler
+    @method_handler
     def update(self, query, values):
         with closing(self.connection.cursor()) as cursor:
             cursor.execute(query, values)
@@ -89,7 +89,7 @@ class SqlHelper(object):
                     message=Strings.UPDATE_FAILED
                 )
 
-    @Decorators.method_handler
+    @method_handler
     def select(self, query, values=None):
         with closing(self.connection.cursor()) as cursor:
             if values is None:
@@ -110,7 +110,7 @@ class SqlHelper(object):
                     message=Strings.NO_DATA_FOUND
                 )
 
-    @Decorators.method_handler
+    @method_handler
     def delete(self, query, values):
         with closing(self.connection.cursor()) as cursor:
             cursor.execute(query, values)
@@ -123,7 +123,7 @@ class SqlHelper(object):
                     message=Strings.DELETE_FAILED
                 )
 
-    @Decorators.method_handler
+    @method_handler
     def delete_all(self, query):
         with closing(self.connection.cursor()) as cursor:
             cursor.execute(query, )
